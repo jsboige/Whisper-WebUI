@@ -3,6 +3,7 @@ import os
 import argparse
 
 from modules.whisper_Inference import WhisperInference
+from modules.faster_whisper_inference import FasterWhisperInference
 from modules.nllb_inference import NLLBInference
 from ui.htmls import *
 from modules.youtube_manager import get_ytmetas
@@ -11,8 +12,12 @@ from modules.youtube_manager import get_ytmetas
 class App:
     def __init__(self, args):
         self.args = args
-        self.app = gr.Blocks(css=CSS)
-        self.whisper_inf = WhisperInference()
+        self.app = gr.Blocks(css=CSS, theme=self.args.theme)
+        self.whisper_inf = WhisperInference() if self.args.disable_faster_whisper else FasterWhisperInference() 
+        if isinstance(self.whisper_inf, FasterWhisperInference):
+            print("Use Faster Whisper implementation")
+        else:
+            print("Use Open AI Whisper implementation")
         self.nllb_inf = NLLBInference()
 
     @staticmethod
@@ -149,16 +154,28 @@ class App:
                                          inputs=None,
                                          outputs=None)
 
+        # Launch the app with optional gradio settings
+        launch_args = {}
         if self.args.share:
-            self.app.queue(api_open=False).launch(share=True)
-        else:
-            self.app.queue(api_open=False).launch()
+            launch_args['share'] = self.args.share
+        if self.args.server_name:
+            launch_args['server_name'] = self.args.server_name
+        if self.args.server_port:
+            launch_args['server_port'] = self.args.server_port
+        if self.args.username and self.args.password:
+            launch_args['auth'] = (self.args.username, self.args.password)
+        self.app.queue(api_open=False).launch(**launch_args)
 
 
-# Create the parser
+# Create the parser for command-line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--share', type=bool, default=False, nargs='?', const=True,
-                    help='Share value')
+parser.add_argument('--disable_faster_whisper', type=bool, default=False, nargs='?', const=True, help='Disable the faster_whisper implementation. faster_whipser is implemented by https://github.com/guillaumekln/faster-whisper')
+parser.add_argument('--share', type=bool, default=False, nargs='?', const=True, help='Gradio share value')
+parser.add_argument('--server_name', type=str, default=None, help='Gradio server host')
+parser.add_argument('--server_port', type=int, default=None, help='Gradio server port')
+parser.add_argument('--username', type=str, default=None, help='Gradio authentication username')
+parser.add_argument('--password', type=str, default=None, help='Gradio authentication password')
+parser.add_argument('--theme', type=str, default=None, help='Gradio Blocks theme')
 _args = parser.parse_args()
 
 if __name__ == "__main__":
