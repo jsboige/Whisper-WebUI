@@ -27,6 +27,8 @@ def get_srt(segments):
     for i, segment in enumerate(segments):
         output += f"{i + 1}\n"
         output += f"{timeformat_srt(segment['start'])} --> {timeformat_srt(segment['end'])}\n"
+        if segment['text'].startswith(' '):
+            segment['text'] = segment['text'][1:]
         output += f"{segment['text']}\n\n"
     return output
 
@@ -36,7 +38,18 @@ def get_vtt(segments):
     for i, segment in enumerate(segments):
         output += f"{i + 1}\n"
         output += f"{timeformat_vtt(segment['start'])} --> {timeformat_vtt(segment['end'])}\n"
+        if segment['text'].startswith(' '):
+            segment['text'] = segment['text'][1:]
         output += f"{segment['text']}\n\n"
+    return output
+
+
+def get_txt(segments):
+    output = ""
+    for i, segment in enumerate(segments):
+        if segment['text'].startswith(' '):
+            segment['text'] = segment['text'][1:]
+        output += f"{segment['text']}\n"
     return output
 
 
@@ -106,5 +119,17 @@ def get_serialized_vtt(dicts):
 
 
 def safe_filename(name):
+    from app import _args
     INVALID_FILENAME_CHARS = r'[<>:"/\\|?*\x00-\x1f]'
-    return re.sub(INVALID_FILENAME_CHARS, '_', name)
+    safe_name = re.sub(INVALID_FILENAME_CHARS, '_', name)
+    if not _args.colab:
+        return safe_name
+    # Truncate the filename if it exceeds the max_length (20)
+    if len(safe_name) > 20:
+        file_extension = safe_name.split('.')[-1]
+        if len(file_extension) + 1 < 20:
+            truncated_name = safe_name[:20 - len(file_extension) - 1]
+            safe_name = truncated_name + '.' + file_extension
+        else:
+            safe_name = safe_name[:20]
+    return safe_name

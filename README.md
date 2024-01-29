@@ -1,5 +1,5 @@
 # Whisper-WebUI
-A Gradio-based browser interface for Whisper. You can use it as an Easy Subtitle Generator!
+A Gradio-based browser interface for [Whisper](https://github.com/openai/whisper). You can use it as an Easy Subtitle Generator!
 
 ![Whisper WebUI](https://github.com/jhj0517/Whsiper-WebUI/blob/master/screenshot.png)
 
@@ -14,10 +14,12 @@ If you wish to try this on Colab, you can do it in [here](https://colab.research
 - Currently supported subtitle formats : 
   - SRT
   - WebVTT
+  - txt ( only text file without timeline )
 - Speech to Text Translation 
   - From other languages to English. ( This is Whisper's end-to-end speech-to-text translation feature )
 - Text to Text Translation
   - Translate subtitle files using Facebook NLLB models
+  - Translate subtitle files using DeepL API
 
 # Installation and Running
 ## Prerequisite
@@ -25,7 +27,7 @@ To run Whisper, you need to have `git`, `python` version 3.8 ~ 3.10 and `FFmpeg`
 
 Please follow the links below to install the necessary software:
 - git : [https://git-scm.com/downloads](https://git-scm.com/downloads)
-- python : [https://www.python.org/downloads/](https://www.python.org/downloads/)
+- python : [https://www.python.org/downloads/](https://www.python.org/downloads/) **( If your python version is too new, torch will not install properly.)**
 - FFmpeg :  [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html)
 
 After installing FFmpeg, **make sure to add the `FFmpeg/bin` folder to your system PATH!**
@@ -33,8 +35,8 @@ After installing FFmpeg, **make sure to add the `FFmpeg/bin` folder to your syst
 ## Automatic Installation
 If you have satisfied the prerequisites listed above, you are now ready to start Whisper-WebUI.
 
-1. Run `Install.bat` from Windows Explorer as a regular, non-administrator user.
-2. After installation, run the `start-webui.bat`. (It will automatically download the model if it is not already installed.)
+1. Run `Install.bat` from Windows Explorer as a regular, non-administrator user. ( Run `install.sh` if you are using Mac ) 
+2. After installation, run the `start-webui.bat`. ( Run `start-webui.sh` if you are using Mac ) 
 3. Open your web browser and go to `http://localhost:7860`
 
 ( If you're running another Web-UI, it will be hosted on a different port , such as `localhost:7861`, `localhost:7862`, and so on )

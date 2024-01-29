@@ -1,8 +1,7 @@
+@echo off
 :: This batch file is for launching with command line args
 :: See the wiki for a guide to command line arguments: https://github.com/jhj0517/Whisper-WebUI/wiki/Command-Line-Arguments
-@echo off
-
-:: Set values
+:: Set the values here to whatever you want. See the wiki above for how to set this.
 set SERVER_NAME=
 set SERVER_PORT=
 set USERNAME=
@@ -10,6 +9,9 @@ set PASSWORD=
 set SHARE=
 set THEME=
 set DISABLE_FASTER_WHISPER=
+
+
+
 
 :: Set args accordingly
 if not "%SERVER_NAME%"=="" (
